@@ -5,10 +5,11 @@ const { QueryTypes } = require('sequelize');
 
 //TODO: Create Caption Master
 router.post('/create', async (req, res, next) => {
+  let transaction;
   try {
     const { body } = req;
     const { CaptionMaster: CaptionMasterModel } = models;
-    const transaction = await getTransaction();
+    transaction = await getTransaction();
 
     if (_.isEmpty(body)) {
       throw new Error('Body can not be null');
@@ -37,13 +38,14 @@ router.post('/create', async (req, res, next) => {
 
 //TODO: Delete Caption Master
 router.delete('/delete/:id', async (req, res, next) => {
+  let transaction;
   try {
     const { params: { id = 0 } } = req;
     const { CaptionMaster: CaptionMasterModel, Caption: CaptionModel } = models;
-    const transaction = await getTransaction();
+    transaction = await getTransaction();
 
     const findInstance = await CaptionMasterModel.count({ where: { id } });
-    if (findInstance) {
+    if (!findInstance) {
       throw new Error('No Such Instance Found!');
     }
 
@@ -68,9 +70,10 @@ router.get('/list', async (req, res, next) => {
   try {
     const { query: { skip = 0, limit = 10, search = '', sortOn = 'id', sortBy = 'DESC' } } = req;
     let query = `select
+    cm.id,
     cm."label",
     cm.description,
-    cm.is_active
+    cm.is_active as "isActive"
   from
     caption_master cm
   where
@@ -93,7 +96,7 @@ router.get('/list', async (req, res, next) => {
     });
 
     res.json({
-      instances,
+      data: instances,
       count: parseInt(count)
     });
   } catch (error) {

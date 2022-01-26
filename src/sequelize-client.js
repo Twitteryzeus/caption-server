@@ -63,6 +63,6 @@ Object.keys(models).forEach(key => {
   }
 })
 
-const getTransaction = async () => sequelize.transaction({ isolationLevel: Sequelize.Transaction.ISOLATION_LEVELS.READ_COMMITTED })
+const getTransaction = async () => sequelize.transaction({ isolationLevel: Sequelize.Transaction.ISOLATION_LEVELS.READ_COMMITTED });
 
 module.exports = { sequelize, models, getTransaction }

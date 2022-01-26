@@ -4,6 +4,7 @@ const nodePackage = require('../package.json');
 const app = express();
 const { port } = require('./config');
 const { sequelize } = require('./sequelize-client');
+const setAllRoutes = require('./routes');
 
 app.use(cors());
 app.use(express.json());
@@ -15,6 +16,8 @@ app.get('/version', (req, res) => {
 app.get('/', (req, res) => {
   res.json({ message: "Server is working!" });
 });
+
+setAllRoutes(app);
 
 sequelize.sync().then(async () => {
   app.listen(port, () => {

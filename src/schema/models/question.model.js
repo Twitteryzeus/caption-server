@@ -2,7 +2,7 @@ const { Model } = require('sequelize')
 
 module.exports = (sequelize, DataTypes) => {
 
-  class PhotoMaster extends Model {
+  class Question extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -13,14 +13,18 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
 
-  PhotoMaster.init({
+  Question.init({
     label: {
-      type: DataTypes.STRING,
-      unique: false,
+      type: DataTypes.TEXT,
       allowNull: false
     },
-    description: {
-      type: DataTypes.TEXT
+    questionType: {
+      type: DataTypes.ENUM('DARE','QUESTION'),
+      defaultValue: 'QUESTION'
+    },
+    isAdult: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false
     },
     isActive: {
       type: DataTypes.BOOLEAN,
@@ -28,20 +32,11 @@ module.exports = (sequelize, DataTypes) => {
     },
   }, {
     sequelize,
-    modelName: 'PhotoMaster',
-    tableName: 'photo_master'
+    modelName: 'Question',
+    tableName: 'question'
   })
 
-  PhotoMaster.associate = (models) => {
-    PhotoMaster.hasMany(models.Photo, {
-      as: 'photos',
-      foreignKey: 'photoMasterId',
-      sourceKey: 'id',
-      constraints: false,
-      onDelete: 'RESTRICT',
-      hooks: true
-    })
-  }
+  Question.associate = (models) => {}
 
-  return PhotoMaster
+  return Question
 }

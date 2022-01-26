@@ -2,7 +2,7 @@ const { Model } = require('sequelize')
 
 module.exports = (sequelize, DataTypes) => {
 
-  class PhotoMaster extends Model {
+  class Photo extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -13,14 +13,27 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
 
-  PhotoMaster.init({
+  Photo.init({
     label: {
       type: DataTypes.STRING,
       unique: false,
       allowNull: false
     },
-    description: {
-      type: DataTypes.TEXT
+    photoMasterId: {
+      type: DataTypes.INTEGER,
+      allowNull: false
+    },
+    name: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    key: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    url: {
+      type: DataTypes.STRING,
+      allowNull: false
     },
     isActive: {
       type: DataTypes.BOOLEAN,
@@ -28,20 +41,20 @@ module.exports = (sequelize, DataTypes) => {
     },
   }, {
     sequelize,
-    modelName: 'PhotoMaster',
-    tableName: 'photo_master'
+    modelName: 'Photo',
+    tableName: 'photo'
   })
 
-  PhotoMaster.associate = (models) => {
-    PhotoMaster.hasMany(models.Photo, {
-      as: 'photos',
+  Photo.associate = (models) => {
+    Photo.belongsTo(models.PhotoMaster, {
       foreignKey: 'photoMasterId',
-      sourceKey: 'id',
-      constraints: false,
-      onDelete: 'RESTRICT',
-      hooks: true
+      targetKey: 'id',
+      as: 'photoMaster',
+      allowNull: true,
+      defaultValue: null,
+      constraints: false
     })
   }
 
-  return PhotoMaster
+  return Photo
 }
